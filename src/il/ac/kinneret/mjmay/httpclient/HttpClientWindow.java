@@ -55,6 +55,7 @@ public class HttpClientWindow implements Initializable {
             Map<String, List<String>> headers = connection.getHeaderFields();
             for (String header : headers.keySet()) {
                 System.out.println(header + ": " + headers.get(header));
+                taResponse.appendText(header + ":" + headers.get(header) + "\n");
             }
           //  System.out.println(connection.getHeaderFields());
             for(String requestProperty:requestHeaders.keySet())
