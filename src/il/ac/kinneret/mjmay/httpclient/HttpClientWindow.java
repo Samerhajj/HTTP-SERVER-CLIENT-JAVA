@@ -25,10 +25,10 @@ public class HttpClientWindow implements Initializable {
 
     }
 
-    public void doSend(ActionEvent event) throws MalformedURLException {
+    public void doSend(ActionEvent event) throws MalformedURLException, UnknownHostException {
 
         /// TODO: Fill in sending code
-        try {
+
             URL url = new URL(tfURL.getText());
             String host = url.getHost();
             //FORMAT URL CORRECTLY
@@ -45,17 +45,18 @@ public class HttpClientWindow implements Initializable {
 //Once we have the URL formatted properly, we can then connect to the remote web server using an
 //HttpURLConnection:
 //HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        try {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine).append("\n");
-            }
-            in.close();
+            connection.setRequestMethod("GET");
 //GET RESPONSE
             //show request properties
             Map<String,List<String>> requestHeaders=connection.getRequestProperties();
+            System.out.println(connection.getRequestProperties());
+            Map<String, List<String>> headers = connection.getHeaderFields();
+            for (String header : headers.keySet()) {
+                System.out.println(header + ": " + headers.get(header));
+            }
+          //  System.out.println(connection.getHeaderFields());
             for(String requestProperty:requestHeaders.keySet())
             {
                 if(requestProperty!=null)
@@ -67,7 +68,13 @@ public class HttpClientWindow implements Initializable {
                     taResponse.appendText(s+", ");
                 }
             }
-
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine).append("\n");
+            }
+            in.close();
             taResponse.appendText("\n");
             taResponse.appendText(response.toString());
 
